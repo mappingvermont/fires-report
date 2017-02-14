@@ -1,5 +1,5 @@
 from hyp.marshmallow import Responder
-from ms.schemas import ErrorSchema
+from fires_report.schemas import ErrorSchema
 
 
 class ErrorResponder(Responder):

@@ -1,7 +1,7 @@
 FROM python:2.7-alpine
 MAINTAINER Sergio Gordillo sergio.gordillo@vizzuality.com
 
-ENV NAME test-python-microservice
+ENV NAME fires-report-microservice
 ENV USER microservice
 
 RUN apk update && apk upgrade && \
@@ -25,7 +25,7 @@ COPY gunicorn.py /opt/$NAME/gunicorn.py
 # Copy the application folder inside the container
 WORKDIR /opt/$NAME
 
-COPY ./ms /opt/$NAME/ms
+COPY ./fires_report /opt/$NAME/fires_report
 COPY ./microservice /opt/$NAME/microservice
 COPY ./tests /opt/$NAME/tests
 RUN chown $USER:$USER /opt/$NAME

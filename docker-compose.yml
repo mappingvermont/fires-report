@@ -1,5 +1,5 @@
 prod:
-  image: vizzuality/test-python:0.0.1${STAGING}
+  image: vizzuality/fires-report:0.0.1${STAGING}
   ports:
     - "5700"
   env_file:
@@ -10,4 +10,4 @@ prod:
   log_driver: "syslog"
   log_opt:
       syslog-address: ${SYSLOG_ADDRESS}
-      tag: test-python${STAGING}
+      tag: fires-report${STAGING}

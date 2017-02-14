@@ -1,5 +1,5 @@
 import os
-from ms import create_application
+from firesreport import create_application
 
 application = create_application()
 
