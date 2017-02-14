@@ -82,19 +82,16 @@ def do_reports():
     payload = {
         'f':'json',
         'spatialRelationship':'esriSpatialRelIntersects',
-        'where':column +' in ('+values+') ACQ_DATE >= '+ period_list[0] +' AND ACQ_DATE <= ' + period_list[1],
+        'where': "{0} in ({1}) AND ACQ_DATE >= date '{2}' AND ACQ_DATE <= date '{3}'".format(column, values, period_list[0], period_list[1]),
         'returnGeometry':False,
         'groupByFieldsForStatistics':['ACQ_DATE'],
         'orderByFields':['ACQ_DATE ASC'],
-        'outStatistics':[{
-            'onStatisticField':'ACQ_DATE',
-            'outStatisticFieldName':'Count',
-            'statisticType':'count'
-        }]
+        'outStatistics': "[{'onStatisticField':'ACQ_DATE','outStatisticFieldName':'Count','statisticType':'count'}]"
     }
+    logging.info(payload)
 
     try:
-        response = requests.get('http://gis-potico.wri.org/arcgis/rest/services/Fires/FIRMS_ASEAN/MapServer/0', params=payload)
+        response = requests.get('http://gis-potico.wri.org/arcgis/rest/services/Fires/FIRMS_ASEAN/MapServer/0/query?', params=payload)
     except Error:
         return jsonify({'errors': [{
             'status': '500',
