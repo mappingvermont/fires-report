@@ -1,4 +1,4 @@
-from fires_report.utils.files import BASE_DIR
+from firesreport.utils.files import BASE_DIR
 
 settings={
     'logging': {
@@ -6,7 +6,7 @@ settings={
     },
     'service': {
         'name': 'MS-PYTHON',
-        'uri': 'http://mymachine:5700',
+        'uri': 'http://172.30.2.63:5700',
         'port': 5700
     }
 }

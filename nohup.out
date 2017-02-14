@@ -1,0 +1,877 @@
+Building develop
+Step 1/23 : FROM python:2.7-alpine
+ ---> c80455665c57
+Step 2/23 : MAINTAINER Sergio Gordillo sergio.gordillo@vizzuality.com
+ ---> Using cache
+ ---> a57d5d9a86f5
+Step 3/23 : ENV NAME fires-report-microservice
+ ---> Using cache
+ ---> 70da87dd0423
+Step 4/23 : ENV USER microservice
+ ---> Using cache
+ ---> c3df8349668a
+Step 5/23 : RUN apk update && apk upgrade &&    apk add --no-cache --update bash git openssl-dev build-base alpine-sdk    libffi-dev
+ ---> Using cache
+ ---> dff9146010ae
+Step 6/23 : RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
+ ---> Using cache
+ ---> 0a79c2d30f37
+Step 7/23 : RUN easy_install pip && pip install --upgrade pip
+ ---> Using cache
+ ---> da48c911e9b6
+Step 8/23 : RUN pip install virtualenv gunicorn gevent
+ ---> Using cache
+ ---> a491e2f42222
+Step 9/23 : RUN mkdir -p /opt/$NAME
+ ---> Using cache
+ ---> 57d83f9ef53f
+Step 10/23 : RUN cd /opt/$NAME && virtualenv venv && source venv/bin/activate
+ ---> Using cache
+ ---> 8480cf07e13a
+Step 11/23 : COPY requirements.txt /opt/$NAME/requirements.txt
+ ---> Using cache
+ ---> 91b6b20a328f
+Step 12/23 : RUN cd /opt/$NAME && pip install -r requirements.txt
+ ---> Using cache
+ ---> 3630bb06e574
+Step 13/23 : COPY entrypoint.sh /opt/$NAME/entrypoint.sh
+ ---> Using cache
+ ---> dd415aae560d
+Step 14/23 : COPY main.py /opt/$NAME/main.py
+ ---> Using cache
+ ---> 3e3c6194e8ac
+Step 15/23 : COPY gunicorn.py /opt/$NAME/gunicorn.py
+ ---> Using cache
+ ---> f54028acffee
+Step 16/23 : WORKDIR /opt/$NAME
+ ---> Using cache
+ ---> 6a0b566a3a0e
+Step 17/23 : COPY ./firesreport /opt/$NAME/firesreport
+ ---> Using cache
+ ---> a6f5192d9ce4
+Step 18/23 : COPY ./microservice /opt/$NAME/microservice
+ ---> Using cache
+ ---> 239b59b088b8
+Step 19/23 : COPY ./tests /opt/$NAME/tests
+ ---> Using cache
+ ---> af49b06a0e62
+Step 20/23 : RUN chown $USER:$USER /opt/$NAME
+ ---> Using cache
+ ---> 04a7054173ed
+Step 21/23 : EXPOSE 5700
+ ---> Using cache
+ ---> d551444af14a
+Step 22/23 : USER $USER
+ ---> Using cache
+ ---> 84e374c6db5f
+Step 23/23 : ENTRYPOINT ./entrypoint.sh
+ ---> Using cache
+ ---> c8a9bf60f320
+Successfully built c8a9bf60f320
+Starting fires-report
+Attaching to fires-report
+[36mfires-report | [0mRunning Development Server
+[36mfires-report | [0m[20170214-10:30AM] [werkzeug] [INFO]  * Running on http://0.0.0.0:5700/ (Press CTRL+C to quit)
+[36mfires-report | [0m[20170214-10:30AM] [werkzeug] [INFO]  * Restarting with stat
+[36mfires-report | [0m[20170214-10:30AM] [werkzeug] [WARNING]  * Debugger is active!
+[36mfires-report | [0m[20170214-10:30AM] [werkzeug] [INFO]  * Debugger pin code: 278-741-718
+[36mfires-report | [0m[20170214-10:30AM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.63
+[36mfires-report | [0m[20170214-10:30AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:30:57] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJmaXJlc3JlcG9ydCIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwidmVyc2lvbiI6MSwiX2lkIjoiNThhMmRjNjE5ZWFmMWEwMDEzODlhY2ZjIiwidGFncyI6W10sImVuZHBvaW50cyI6W10sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTA6MzA6NTcuMTYzWiIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInN0YXR1cyI6InBlbmRpbmciLCJwYXRoTGl2ZSI6Ii9waW5nIiwicGF0aEluZm8iOiIvaW5mbyJ9LCJhY3RpdmVQYXRocyI6eyJwYXRocyI6eyJ2ZXJzaW9uIjoicmVxdWlyZSIsInVwZGF0ZWRBdCI6InJlcXVpcmUiLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOiJyZXF1aXJlIiwicGF0aExpdmUiOiJyZXF1aXJlIiwicGF0aEluZm8iOiJyZXF1aXJlIiwidXJsIjoicmVxdWlyZSIsIm5hbWUiOiJyZXF1aXJlIn0sInN0YXRlcyI6eyJpZ25vcmUiOnt9LCJkZWZhdWx0Ijp7fSwiaW5pdCI6e30sIm1vZGlmeSI6e30sInJlcXVpcmUiOnsidmVyc2lvbiI6dHJ1ZSwidXBkYXRlZEF0Ijp0cnVlLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOnRydWUsInBhdGhMaXZlIjp0cnVlLCJwYXRoSW5mbyI6dHJ1ZSwidXJsIjp0cnVlLCJuYW1lIjp0cnVlfX0sInN0YXRlTmFtZXMiOlsicmVxdWlyZSIsIm1vZGlmeSIsImluaXQiLCJkZWZhdWx0IiwiaWdub3JlIl19LCJlbWl0dGVyIjp7ImRvbWFpbiI6bnVsbCwiX2V2ZW50cyI6e30sIl9ldmVudHNDb3VudCI6MiwiX21heExpc3RlbmVycyI6MH19LCJpc05ldyI6ZmFsc2UsIl9kb2MiOnsicGF0aEluZm8iOiIvaW5mbyIsInBhdGhMaXZlIjoiL3BpbmciLCJzdGF0dXMiOiJwZW5kaW5nIiwiaW5mb1N0YXR1cyI6eyJudW1SZXRyaWVzIjowfSwidXBkYXRlZEF0IjoiMjAxNy0wMi0xNFQxMDozMDo1Ny4xNjNaIiwiZW5kcG9pbnRzIjpbXSwidGFncyI6W10sIl9pZCI6IjU4YTJkYzYxOWVhZjFhMDAxMzg5YWNmYyIsInZlcnNpb24iOjEsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwibmFtZSI6ImZpcmVzcmVwb3J0IiwiX192IjowfSwiaWF0IjoxNDg3MDY4MjU3fQ.7ZJyvrscZMEqFZLpKG1eDi2Tp8-iJMJheJHws_2yE7M&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-10:30AM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.63:9000 "POST /api/v1/microservice HTTP/1.1" 200 626
+[36mfires-report | [0m[20170214-10:30AM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.63
+[36mfires-report | [0m[20170214-10:30AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:30:57] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJmaXJlc3JlcG9ydCIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwidmVyc2lvbiI6MSwiX2lkIjoiNThhMmRjNjE5ZWFmMWEwMDEzODlhZDAwIiwidGFncyI6W10sImVuZHBvaW50cyI6W10sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTA6MzA6NTcuMzUwWiIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInN0YXR1cyI6InBlbmRpbmciLCJwYXRoTGl2ZSI6Ii9waW5nIiwicGF0aEluZm8iOiIvaW5mbyJ9LCJhY3RpdmVQYXRocyI6eyJwYXRocyI6eyJ2ZXJzaW9uIjoicmVxdWlyZSIsInVwZGF0ZWRBdCI6InJlcXVpcmUiLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOiJyZXF1aXJlIiwicGF0aExpdmUiOiJyZXF1aXJlIiwicGF0aEluZm8iOiJyZXF1aXJlIiwidXJsIjoicmVxdWlyZSIsIm5hbWUiOiJyZXF1aXJlIn0sInN0YXRlcyI6eyJpZ25vcmUiOnt9LCJkZWZhdWx0Ijp7fSwiaW5pdCI6e30sIm1vZGlmeSI6e30sInJlcXVpcmUiOnsidmVyc2lvbiI6dHJ1ZSwidXBkYXRlZEF0Ijp0cnVlLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOnRydWUsInBhdGhMaXZlIjp0cnVlLCJwYXRoSW5mbyI6dHJ1ZSwidXJsIjp0cnVlLCJuYW1lIjp0cnVlfX0sInN0YXRlTmFtZXMiOlsicmVxdWlyZSIsIm1vZGlmeSIsImluaXQiLCJkZWZhdWx0IiwiaWdub3JlIl19LCJlbWl0dGVyIjp7ImRvbWFpbiI6bnVsbCwiX2V2ZW50cyI6e30sIl9ldmVudHNDb3VudCI6MiwiX21heExpc3RlbmVycyI6MH19LCJpc05ldyI6ZmFsc2UsIl9kb2MiOnsicGF0aEluZm8iOiIvaW5mbyIsInBhdGhMaXZlIjoiL3BpbmciLCJzdGF0dXMiOiJwZW5kaW5nIiwiaW5mb1N0YXR1cyI6eyJudW1SZXRyaWVzIjowfSwidXBkYXRlZEF0IjoiMjAxNy0wMi0xNFQxMDozMDo1Ny4zNTBaIiwiZW5kcG9pbnRzIjpbXSwidGFncyI6W10sIl9pZCI6IjU4YTJkYzYxOWVhZjFhMDAxMzg5YWQwMCIsInZlcnNpb24iOjEsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwibmFtZSI6ImZpcmVzcmVwb3J0IiwiX192IjowfSwiaWF0IjoxNDg3MDY4MjU3fQ.8mNIhL2vFk2gIXAgTU_4leOH42ifPW5Kf0GUPa91nUY&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-10:30AM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.63:9000 "POST /api/v1/microservice HTTP/1.1" 200 626
+[36mfires-report | [0m[20170214-10:35AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:35:55] "GET /api/v1/ms/hello?loggedUser=null HTTP/1.1" 404 -
+[36mfires-report | [0m[20170214-10:36AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:36:41] "GET /api/v1/ms/hello?loggedUser=null HTTP/1.1" 404 -
+[36mfires-report exited with code 137
+[0mBuilding develop
+Step 1/23 : FROM python:2.7-alpine
+ ---> c80455665c57
+Step 2/23 : MAINTAINER Sergio Gordillo sergio.gordillo@vizzuality.com
+ ---> Using cache
+ ---> a57d5d9a86f5
+Step 3/23 : ENV NAME fires-report-microservice
+ ---> Using cache
+ ---> 70da87dd0423
+Step 4/23 : ENV USER microservice
+ ---> Using cache
+ ---> c3df8349668a
+Step 5/23 : RUN apk update && apk upgrade &&    apk add --no-cache --update bash git openssl-dev build-base alpine-sdk    libffi-dev
+ ---> Using cache
+ ---> dff9146010ae
+Step 6/23 : RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
+ ---> Using cache
+ ---> 0a79c2d30f37
+Step 7/23 : RUN easy_install pip && pip install --upgrade pip
+ ---> Using cache
+ ---> da48c911e9b6
+Step 8/23 : RUN pip install virtualenv gunicorn gevent
+ ---> Using cache
+ ---> a491e2f42222
+Step 9/23 : RUN mkdir -p /opt/$NAME
+ ---> Using cache
+ ---> 57d83f9ef53f
+Step 10/23 : RUN cd /opt/$NAME && virtualenv venv && source venv/bin/activate
+ ---> Using cache
+ ---> 8480cf07e13a
+Step 11/23 : COPY requirements.txt /opt/$NAME/requirements.txt
+ ---> Using cache
+ ---> 91b6b20a328f
+Step 12/23 : RUN cd /opt/$NAME && pip install -r requirements.txt
+ ---> Using cache
+ ---> 3630bb06e574
+Step 13/23 : COPY entrypoint.sh /opt/$NAME/entrypoint.sh
+ ---> Using cache
+ ---> dd415aae560d
+Step 14/23 : COPY main.py /opt/$NAME/main.py
+ ---> Using cache
+ ---> 3e3c6194e8ac
+Step 15/23 : COPY gunicorn.py /opt/$NAME/gunicorn.py
+ ---> Using cache
+ ---> f54028acffee
+Step 16/23 : WORKDIR /opt/$NAME
+ ---> Using cache
+ ---> 6a0b566a3a0e
+Step 17/23 : COPY ./firesreport /opt/$NAME/firesreport
+ ---> Using cache
+ ---> a6f5192d9ce4
+Step 18/23 : COPY ./microservice /opt/$NAME/microservice
+ ---> b06251ed8632
+Removing intermediate container 717049d21b03
+Step 19/23 : COPY ./tests /opt/$NAME/tests
+ ---> 03fbf8df7a16
+Removing intermediate container 7c7b9ef4310f
+Step 20/23 : RUN chown $USER:$USER /opt/$NAME
+ ---> Running in 53d4cc82076f
+ ---> 687bcbba2e0f
+Removing intermediate container 53d4cc82076f
+Step 21/23 : EXPOSE 5700
+ ---> Running in f81b1f71fe85
+ ---> 3c4e4ef525e0
+Removing intermediate container f81b1f71fe85
+Step 22/23 : USER $USER
+ ---> Running in c2b18e0758ae
+ ---> 19829db0ebcf
+Removing intermediate container c2b18e0758ae
+Step 23/23 : ENTRYPOINT ./entrypoint.sh
+ ---> Running in bdf07e6f1cdb
+ ---> 41b349680135
+Removing intermediate container bdf07e6f1cdb
+Successfully built 41b349680135
+Recreating fires-report
+Attaching to fires-report
+[36mfires-report | [0mRunning Development Server
+[36mfires-report | [0m[20170214-10:38AM] [werkzeug] [INFO]  * Running on http://0.0.0.0:5700/ (Press CTRL+C to quit)
+[36mfires-report | [0m[20170214-10:38AM] [werkzeug] [INFO]  * Restarting with stat
+[36mfires-report | [0m[20170214-10:38AM] [werkzeug] [WARNING]  * Debugger is active!
+[36mfires-report | [0m[20170214-10:38AM] [werkzeug] [INFO]  * Debugger pin code: 278-741-718
+[36mfires-report | [0m[20170214-10:38AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:38:35] "GET /api/v1/ms/hello?loggedUser=null HTTP/1.1" 404 -
+[36mfires-report | [0m[20170214-10:38AM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.63
+[36mfires-report | [0m[20170214-10:38AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:38:39] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJmaXJlc3JlcG9ydCIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwidmVyc2lvbiI6MSwiX2lkIjoiNThhMmRlMmY5ZWFmMWEwMDEzODlhZDA5IiwidGFncyI6W10sImVuZHBvaW50cyI6W10sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTA6Mzg6MzkuMzE0WiIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInN0YXR1cyI6InBlbmRpbmciLCJwYXRoTGl2ZSI6Ii9waW5nIiwicGF0aEluZm8iOiIvaW5mbyJ9LCJhY3RpdmVQYXRocyI6eyJwYXRocyI6eyJ2ZXJzaW9uIjoicmVxdWlyZSIsInVwZGF0ZWRBdCI6InJlcXVpcmUiLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOiJyZXF1aXJlIiwicGF0aExpdmUiOiJyZXF1aXJlIiwicGF0aEluZm8iOiJyZXF1aXJlIiwidXJsIjoicmVxdWlyZSIsIm5hbWUiOiJyZXF1aXJlIn0sInN0YXRlcyI6eyJpZ25vcmUiOnt9LCJkZWZhdWx0Ijp7fSwiaW5pdCI6e30sIm1vZGlmeSI6e30sInJlcXVpcmUiOnsidmVyc2lvbiI6dHJ1ZSwidXBkYXRlZEF0Ijp0cnVlLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOnRydWUsInBhdGhMaXZlIjp0cnVlLCJwYXRoSW5mbyI6dHJ1ZSwidXJsIjp0cnVlLCJuYW1lIjp0cnVlfX0sInN0YXRlTmFtZXMiOlsicmVxdWlyZSIsIm1vZGlmeSIsImluaXQiLCJkZWZhdWx0IiwiaWdub3JlIl19LCJlbWl0dGVyIjp7ImRvbWFpbiI6bnVsbCwiX2V2ZW50cyI6e30sIl9ldmVudHNDb3VudCI6MiwiX21heExpc3RlbmVycyI6MH19LCJpc05ldyI6ZmFsc2UsIl9kb2MiOnsicGF0aEluZm8iOiIvaW5mbyIsInBhdGhMaXZlIjoiL3BpbmciLCJzdGF0dXMiOiJwZW5kaW5nIiwiaW5mb1N0YXR1cyI6eyJudW1SZXRyaWVzIjowfSwidXBkYXRlZEF0IjoiMjAxNy0wMi0xNFQxMDozODozOS4zMTRaIiwiZW5kcG9pbnRzIjpbXSwidGFncyI6W10sIl9pZCI6IjU4YTJkZTJmOWVhZjFhMDAxMzg5YWQwOSIsInZlcnNpb24iOjEsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwibmFtZSI6ImZpcmVzcmVwb3J0IiwiX192IjowfSwiaWF0IjoxNDg3MDY4NzE5fQ.2BTTypihj96rwLfkRmkozTuf4Qxqkcv627YszufQIfE&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-10:38AM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.63:9000 "POST /api/v1/microservice HTTP/1.1" 200 635
+[36mfires-report | [0m[20170214-10:38AM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.63
+[36mfires-report | [0m[20170214-10:38AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:38:39] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJmaXJlc3JlcG9ydCIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwidmVyc2lvbiI6MSwiX2lkIjoiNThhMmRlMmY5ZWFmMWEwMDEzODlhZDBkIiwidGFncyI6W10sImVuZHBvaW50cyI6W10sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTA6Mzg6MzkuNTA1WiIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInN0YXR1cyI6InBlbmRpbmciLCJwYXRoTGl2ZSI6Ii9waW5nIiwicGF0aEluZm8iOiIvaW5mbyJ9LCJhY3RpdmVQYXRocyI6eyJwYXRocyI6eyJ2ZXJzaW9uIjoicmVxdWlyZSIsInVwZGF0ZWRBdCI6InJlcXVpcmUiLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOiJyZXF1aXJlIiwicGF0aExpdmUiOiJyZXF1aXJlIiwicGF0aEluZm8iOiJyZXF1aXJlIiwidXJsIjoicmVxdWlyZSIsIm5hbWUiOiJyZXF1aXJlIn0sInN0YXRlcyI6eyJpZ25vcmUiOnt9LCJkZWZhdWx0Ijp7fSwiaW5pdCI6e30sIm1vZGlmeSI6e30sInJlcXVpcmUiOnsidmVyc2lvbiI6dHJ1ZSwidXBkYXRlZEF0Ijp0cnVlLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOnRydWUsInBhdGhMaXZlIjp0cnVlLCJwYXRoSW5mbyI6dHJ1ZSwidXJsIjp0cnVlLCJuYW1lIjp0cnVlfX0sInN0YXRlTmFtZXMiOlsicmVxdWlyZSIsIm1vZGlmeSIsImluaXQiLCJkZWZhdWx0IiwiaWdub3JlIl19LCJlbWl0dGVyIjp7ImRvbWFpbiI6bnVsbCwiX2V2ZW50cyI6e30sIl9ldmVudHNDb3VudCI6MiwiX21heExpc3RlbmVycyI6MH19LCJpc05ldyI6ZmFsc2UsIl9kb2MiOnsicGF0aEluZm8iOiIvaW5mbyIsInBhdGhMaXZlIjoiL3BpbmciLCJzdGF0dXMiOiJwZW5kaW5nIiwiaW5mb1N0YXR1cyI6eyJudW1SZXRyaWVzIjowfSwidXBkYXRlZEF0IjoiMjAxNy0wMi0xNFQxMDozODozOS41MDVaIiwiZW5kcG9pbnRzIjpbXSwidGFncyI6W10sIl9pZCI6IjU4YTJkZTJmOWVhZjFhMDAxMzg5YWQwZCIsInZlcnNpb24iOjEsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwibmFtZSI6ImZpcmVzcmVwb3J0IiwiX192IjowfSwiaWF0IjoxNDg3MDY4NzE5fQ.6NkFV2iknSCUW1JkHU0Suzxm4DcQE5wmbfEMKmTI5vo&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-10:38AM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.63:9000 "POST /api/v1/microservice HTTP/1.1" 200 635
+[36mfires-report | [0m[20170214-10:41AM] [root] [INFO] Doing GEE Query
+[36mfires-report | [0m[20170214-10:41AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:41:03] "GET /api/v1/firesreport/hello HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-10:41AM] [root] [INFO] Doing GEE Query
+[36mfires-report | [0m[20170214-10:41AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:41:12] "GET /api/v1/firesreport/hello?loggedUser=null HTTP/1.1" 200 -
+[36mfires-report exited with code 137
+[0mBuilding develop
+Step 1/23 : FROM python:2.7-alpine
+ ---> c80455665c57
+Step 2/23 : MAINTAINER Sergio Gordillo sergio.gordillo@vizzuality.com
+ ---> Using cache
+ ---> a57d5d9a86f5
+Step 3/23 : ENV NAME fires-report-microservice
+ ---> Using cache
+ ---> 70da87dd0423
+Step 4/23 : ENV USER microservice
+ ---> Using cache
+ ---> c3df8349668a
+Step 5/23 : RUN apk update && apk upgrade &&    apk add --no-cache --update bash git openssl-dev build-base alpine-sdk    libffi-dev
+ ---> Using cache
+ ---> dff9146010ae
+Step 6/23 : RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
+ ---> Using cache
+ ---> 0a79c2d30f37
+Step 7/23 : RUN easy_install pip && pip install --upgrade pip
+ ---> Using cache
+ ---> da48c911e9b6
+Step 8/23 : RUN pip install virtualenv gunicorn gevent
+ ---> Using cache
+ ---> a491e2f42222
+Step 9/23 : RUN mkdir -p /opt/$NAME
+ ---> Using cache
+ ---> 57d83f9ef53f
+Step 10/23 : RUN cd /opt/$NAME && virtualenv venv && source venv/bin/activate
+ ---> Using cache
+ ---> 8480cf07e13a
+Step 11/23 : COPY requirements.txt /opt/$NAME/requirements.txt
+ ---> Using cache
+ ---> 91b6b20a328f
+Step 12/23 : RUN cd /opt/$NAME && pip install -r requirements.txt
+ ---> Using cache
+ ---> 3630bb06e574
+Step 13/23 : COPY entrypoint.sh /opt/$NAME/entrypoint.sh
+ ---> Using cache
+ ---> dd415aae560d
+Step 14/23 : COPY main.py /opt/$NAME/main.py
+ ---> Using cache
+ ---> 3e3c6194e8ac
+Step 15/23 : COPY gunicorn.py /opt/$NAME/gunicorn.py
+ ---> Using cache
+ ---> f54028acffee
+Step 16/23 : WORKDIR /opt/$NAME
+ ---> Using cache
+ ---> 6a0b566a3a0e
+Step 17/23 : COPY ./firesreport /opt/$NAME/firesreport
+ ---> 6f54da131b03
+Removing intermediate container 7ca038270f07
+Step 18/23 : COPY ./microservice /opt/$NAME/microservice
+ ---> 8e311cbdb76c
+Removing intermediate container aeb964780e4b
+Step 19/23 : COPY ./tests /opt/$NAME/tests
+ ---> 24561dbb3770
+Removing intermediate container 79ce9de5df6b
+Step 20/23 : RUN chown $USER:$USER /opt/$NAME
+ ---> Running in 6adfd0b22c29
+ ---> 0a1006e47720
+Removing intermediate container 6adfd0b22c29
+Step 21/23 : EXPOSE 5700
+ ---> Running in 752c95816915
+ ---> f14993ee6d4d
+Removing intermediate container 752c95816915
+Step 22/23 : USER $USER
+ ---> Running in 5d3d1f3595c8
+ ---> 812e5f645ec8
+Removing intermediate container 5d3d1f3595c8
+Step 23/23 : ENTRYPOINT ./entrypoint.sh
+ ---> Running in e54f48b0bade
+ ---> 1ca260390f49
+Removing intermediate container e54f48b0bade
+Successfully built 1ca260390f49
+Recreating fires-report
+Attaching to fires-report
+[36mfires-report | [0mRunning Development Server
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "main.py", line 2, in <module>
+[36mfires-report | [0m    from firesreport import create_application
+[36mfires-report | [0m  File "/opt/fires-report-microservice/firesreport/__init__.py", line 7, in <module>
+[36mfires-report | [0m    from firesreport.routes.api.v1 import endpoints
+[36mfires-report | [0m  File "/opt/fires-report-microservice/firesreport/routes/api/v1/__init__.py", line 4, in <module>
+[36mfires-report | [0m    import firesreport_router
+[36mfires-report | [0mImportError: No module named firesreport_router
+[36mfires-report exited with code 1
+[0mBuilding develop
+Step 1/23 : FROM python:2.7-alpine
+ ---> c80455665c57
+Step 2/23 : MAINTAINER Sergio Gordillo sergio.gordillo@vizzuality.com
+ ---> Using cache
+ ---> a57d5d9a86f5
+Step 3/23 : ENV NAME fires-report-microservice
+ ---> Using cache
+ ---> 70da87dd0423
+Step 4/23 : ENV USER microservice
+ ---> Using cache
+ ---> c3df8349668a
+Step 5/23 : RUN apk update && apk upgrade &&    apk add --no-cache --update bash git openssl-dev build-base alpine-sdk    libffi-dev
+ ---> Using cache
+ ---> dff9146010ae
+Step 6/23 : RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
+ ---> Using cache
+ ---> 0a79c2d30f37
+Step 7/23 : RUN easy_install pip && pip install --upgrade pip
+ ---> Using cache
+ ---> da48c911e9b6
+Step 8/23 : RUN pip install virtualenv gunicorn gevent
+ ---> Using cache
+ ---> a491e2f42222
+Step 9/23 : RUN mkdir -p /opt/$NAME
+ ---> Using cache
+ ---> 57d83f9ef53f
+Step 10/23 : RUN cd /opt/$NAME && virtualenv venv && source venv/bin/activate
+ ---> Using cache
+ ---> 8480cf07e13a
+Step 11/23 : COPY requirements.txt /opt/$NAME/requirements.txt
+ ---> Using cache
+ ---> 91b6b20a328f
+Step 12/23 : RUN cd /opt/$NAME && pip install -r requirements.txt
+ ---> Using cache
+ ---> 3630bb06e574
+Step 13/23 : COPY entrypoint.sh /opt/$NAME/entrypoint.sh
+ ---> Using cache
+ ---> dd415aae560d
+Step 14/23 : COPY main.py /opt/$NAME/main.py
+ ---> Using cache
+ ---> 3e3c6194e8ac
+Step 15/23 : COPY gunicorn.py /opt/$NAME/gunicorn.py
+ ---> Using cache
+ ---> f54028acffee
+Step 16/23 : WORKDIR /opt/$NAME
+ ---> Using cache
+ ---> 6a0b566a3a0e
+Step 17/23 : COPY ./firesreport /opt/$NAME/firesreport
+ ---> 84b5557e4dad
+Removing intermediate container ea96a6117493
+Step 18/23 : COPY ./microservice /opt/$NAME/microservice
+ ---> dbf1b51d1740
+Removing intermediate container d1b659db86ea
+Step 19/23 : COPY ./tests /opt/$NAME/tests
+ ---> c22b44c61306
+Removing intermediate container ef4d3ea0d497
+Step 20/23 : RUN chown $USER:$USER /opt/$NAME
+ ---> Running in 392ee447db2e
+ ---> 894a0c5ef9c1
+Removing intermediate container 392ee447db2e
+Step 21/23 : EXPOSE 5700
+ ---> Running in 85763400e083
+ ---> d6874f0539bd
+Removing intermediate container 85763400e083
+Step 22/23 : USER $USER
+ ---> Running in 1e761f7ea687
+ ---> a05c300e5847
+Removing intermediate container 1e761f7ea687
+Step 23/23 : ENTRYPOINT ./entrypoint.sh
+ ---> Running in 4ffa039c0dbe
+ ---> 6a654a13ecdf
+Removing intermediate container 4ffa039c0dbe
+Successfully built 6a654a13ecdf
+Recreating fires-report
+Attaching to fires-report
+[36mfires-report | [0mRunning Development Server
+[36mfires-report | [0m[20170214-10:45AM] [werkzeug] [INFO]  * Running on http://0.0.0.0:5700/ (Press CTRL+C to quit)
+[36mfires-report | [0m[20170214-10:45AM] [werkzeug] [INFO]  * Restarting with stat
+[36mfires-report | [0m[20170214-10:45AM] [werkzeug] [WARNING]  * Debugger is active!
+[36mfires-report | [0m[20170214-10:45AM] [werkzeug] [INFO]  * Debugger pin code: 278-741-718
+[36mfires-report | [0m[20170214-10:45AM] [root] [INFO] Doing GEE Query
+[36mfires-report | [0m[20170214-10:45AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:45:58] "GET /api/v1/firesreport/hello?loggedUser=null HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-10:46AM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.63
+[36mfires-report | [0m[20170214-10:46AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:46:00] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJmaXJlc3JlcG9ydCIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwidmVyc2lvbiI6MSwiX2lkIjoiNThhMmRmZTg5ZWFmMWEwMDEzODlhZDE0IiwidGFncyI6W10sImVuZHBvaW50cyI6W10sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTA6NDY6MDAuMjgwWiIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInN0YXR1cyI6InBlbmRpbmciLCJwYXRoTGl2ZSI6Ii9waW5nIiwicGF0aEluZm8iOiIvaW5mbyJ9LCJhY3RpdmVQYXRocyI6eyJwYXRocyI6eyJ2ZXJzaW9uIjoicmVxdWlyZSIsInVwZGF0ZWRBdCI6InJlcXVpcmUiLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOiJyZXF1aXJlIiwicGF0aExpdmUiOiJyZXF1aXJlIiwicGF0aEluZm8iOiJyZXF1aXJlIiwidXJsIjoicmVxdWlyZSIsIm5hbWUiOiJyZXF1aXJlIn0sInN0YXRlcyI6eyJpZ25vcmUiOnt9LCJkZWZhdWx0Ijp7fSwiaW5pdCI6e30sIm1vZGlmeSI6e30sInJlcXVpcmUiOnsidmVyc2lvbiI6dHJ1ZSwidXBkYXRlZEF0Ijp0cnVlLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOnRydWUsInBhdGhMaXZlIjp0cnVlLCJwYXRoSW5mbyI6dHJ1ZSwidXJsIjp0cnVlLCJuYW1lIjp0cnVlfX0sInN0YXRlTmFtZXMiOlsicmVxdWlyZSIsIm1vZGlmeSIsImluaXQiLCJkZWZhdWx0IiwiaWdub3JlIl19LCJlbWl0dGVyIjp7ImRvbWFpbiI6bnVsbCwiX2V2ZW50cyI6e30sIl9ldmVudHNDb3VudCI6MiwiX21heExpc3RlbmVycyI6MH19LCJpc05ldyI6ZmFsc2UsIl9kb2MiOnsicGF0aEluZm8iOiIvaW5mbyIsInBhdGhMaXZlIjoiL3BpbmciLCJzdGF0dXMiOiJwZW5kaW5nIiwiaW5mb1N0YXR1cyI6eyJudW1SZXRyaWVzIjowfSwidXBkYXRlZEF0IjoiMjAxNy0wMi0xNFQxMDo0NjowMC4yODBaIiwiZW5kcG9pbnRzIjpbXSwidGFncyI6W10sIl9pZCI6IjU4YTJkZmU4OWVhZjFhMDAxMzg5YWQxNCIsInZlcnNpb24iOjEsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwibmFtZSI6ImZpcmVzcmVwb3J0IiwiX192IjowfSwiaWF0IjoxNDg3MDY5MTYwfQ.y9mMdnX7ewCtBAN5ssGB1x7fA1By-_wYDU_hyDpBHpo&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-10:46AM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.63:9000 "POST /api/v1/microservice HTTP/1.1" 200 635
+[36mfires-report | [0m[20170214-10:46AM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.63
+[36mfires-report | [0m[20170214-10:46AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:46:00] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJmaXJlc3JlcG9ydCIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwidmVyc2lvbiI6MSwiX2lkIjoiNThhMmRmZTg5ZWFmMWEwMDEzODlhZDE4IiwidGFncyI6W10sImVuZHBvaW50cyI6W10sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTA6NDY6MDAuNDY0WiIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInN0YXR1cyI6InBlbmRpbmciLCJwYXRoTGl2ZSI6Ii9waW5nIiwicGF0aEluZm8iOiIvaW5mbyJ9LCJhY3RpdmVQYXRocyI6eyJwYXRocyI6eyJ2ZXJzaW9uIjoicmVxdWlyZSIsInVwZGF0ZWRBdCI6InJlcXVpcmUiLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOiJyZXF1aXJlIiwicGF0aExpdmUiOiJyZXF1aXJlIiwicGF0aEluZm8iOiJyZXF1aXJlIiwidXJsIjoicmVxdWlyZSIsIm5hbWUiOiJyZXF1aXJlIn0sInN0YXRlcyI6eyJpZ25vcmUiOnt9LCJkZWZhdWx0Ijp7fSwiaW5pdCI6e30sIm1vZGlmeSI6e30sInJlcXVpcmUiOnsidmVyc2lvbiI6dHJ1ZSwidXBkYXRlZEF0Ijp0cnVlLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOnRydWUsInBhdGhMaXZlIjp0cnVlLCJwYXRoSW5mbyI6dHJ1ZSwidXJsIjp0cnVlLCJuYW1lIjp0cnVlfX0sInN0YXRlTmFtZXMiOlsicmVxdWlyZSIsIm1vZGlmeSIsImluaXQiLCJkZWZhdWx0IiwiaWdub3JlIl19LCJlbWl0dGVyIjp7ImRvbWFpbiI6bnVsbCwiX2V2ZW50cyI6e30sIl9ldmVudHNDb3VudCI6MiwiX21heExpc3RlbmVycyI6MH19LCJpc05ldyI6ZmFsc2UsIl9kb2MiOnsicGF0aEluZm8iOiIvaW5mbyIsInBhdGhMaXZlIjoiL3BpbmciLCJzdGF0dXMiOiJwZW5kaW5nIiwiaW5mb1N0YXR1cyI6eyJudW1SZXRyaWVzIjowfSwidXBkYXRlZEF0IjoiMjAxNy0wMi0xNFQxMDo0NjowMC40NjRaIiwiZW5kcG9pbnRzIjpbXSwidGFncyI6W10sIl9pZCI6IjU4YTJkZmU4OWVhZjFhMDAxMzg5YWQxOCIsInZlcnNpb24iOjEsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwibmFtZSI6ImZpcmVzcmVwb3J0IiwiX192IjowfSwiaWF0IjoxNDg3MDY5MTYwfQ.oImfHGsGrJKXcRwKuslV0NJKHSBbxC-wXOtodAFjC8g&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-10:46AM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.63:9000 "POST /api/v1/microservice HTTP/1.1" 200 635
+[36mfires-report | [0m[20170214-10:58AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:58:30] "GET /api/v1/firesreport/ HTTP/1.1" 404 -
+[36mfires-report | [0m[20170214-10:58AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:58:41] "GET /api/v1/fires-report/firesreport/ HTTP/1.1" 404 -
+[36mfires-report | [0m[20170214-10:58AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:58:51] "GET /api/v1/firesreport/firesreport/ HTTP/1.1" 404 -
+[36mfires-report | [0m[20170214-10:58AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:58:54] "GET /api/v1/firesreport/firesreport HTTP/1.1" 404 -
+[36mfires-report | [0m[20170214-10:58AM] [root] [INFO] Doing GEE Query
+[36mfires-report | [0m[20170214-10:58AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:58:58] "GET /api/v1/firesreport/hello HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-10:59AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 10:59:17] "GET /api/v1/firesreport/firesreport HTTP/1.1" 404 -
+[36mfires-report exited with code 137
+[0mBuilding develop
+Step 1/23 : FROM python:2.7-alpine
+ ---> c80455665c57
+Step 2/23 : MAINTAINER Sergio Gordillo sergio.gordillo@vizzuality.com
+ ---> Using cache
+ ---> a57d5d9a86f5
+Step 3/23 : ENV NAME fires-report-microservice
+ ---> Using cache
+ ---> 70da87dd0423
+Step 4/23 : ENV USER microservice
+ ---> Using cache
+ ---> c3df8349668a
+Step 5/23 : RUN apk update && apk upgrade &&    apk add --no-cache --update bash git openssl-dev build-base alpine-sdk    libffi-dev
+ ---> Using cache
+ ---> dff9146010ae
+Step 6/23 : RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
+ ---> Using cache
+ ---> 0a79c2d30f37
+Step 7/23 : RUN easy_install pip && pip install --upgrade pip
+ ---> Using cache
+ ---> da48c911e9b6
+Step 8/23 : RUN pip install virtualenv gunicorn gevent
+ ---> Using cache
+ ---> a491e2f42222
+Step 9/23 : RUN mkdir -p /opt/$NAME
+ ---> Using cache
+ ---> 57d83f9ef53f
+Step 10/23 : RUN cd /opt/$NAME && virtualenv venv && source venv/bin/activate
+ ---> Using cache
+ ---> 8480cf07e13a
+Step 11/23 : COPY requirements.txt /opt/$NAME/requirements.txt
+ ---> Using cache
+ ---> 91b6b20a328f
+Step 12/23 : RUN cd /opt/$NAME && pip install -r requirements.txt
+ ---> Using cache
+ ---> 3630bb06e574
+Step 13/23 : COPY entrypoint.sh /opt/$NAME/entrypoint.sh
+ ---> Using cache
+ ---> dd415aae560d
+Step 14/23 : COPY main.py /opt/$NAME/main.py
+ ---> Using cache
+ ---> 3e3c6194e8ac
+Step 15/23 : COPY gunicorn.py /opt/$NAME/gunicorn.py
+ ---> Using cache
+ ---> f54028acffee
+Step 16/23 : WORKDIR /opt/$NAME
+ ---> Using cache
+ ---> 6a0b566a3a0e
+Step 17/23 : COPY ./firesreport /opt/$NAME/firesreport
+ ---> 301539c589c2
+Removing intermediate container 1c0c1573d32e
+Step 18/23 : COPY ./microservice /opt/$NAME/microservice
+ ---> 1459b47fc818
+Removing intermediate container e88b59611da9
+Step 19/23 : COPY ./tests /opt/$NAME/tests
+ ---> 5678678cc1d9
+Removing intermediate container a8533354fd50
+Step 20/23 : RUN chown $USER:$USER /opt/$NAME
+ ---> Running in 4ae17b8d0854
+ ---> 6250e95f5b56
+Removing intermediate container 4ae17b8d0854
+Step 21/23 : EXPOSE 5700
+ ---> Running in 260c0f69e8a8
+ ---> 91e3e674efc0
+Removing intermediate container 260c0f69e8a8
+Step 22/23 : USER $USER
+ ---> Running in baf98f06e00b
+ ---> ebe61c7f3c87
+Removing intermediate container baf98f06e00b
+Step 23/23 : ENTRYPOINT ./entrypoint.sh
+ ---> Running in 7f936d358b30
+ ---> d695b844db68
+Removing intermediate container 7f936d358b30
+Successfully built d695b844db68
+Recreating fires-report
+Attaching to fires-report
+[36mfires-report | [0mRunning Development Server
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "main.py", line 2, in <module>
+[36mfires-report | [0m    from firesreport import create_application
+[36mfires-report | [0m  File "/opt/fires-report-microservice/firesreport/__init__.py", line 7, in <module>
+[36mfires-report | [0m    from firesreport.routes.api.v1 import endpoints
+[36mfires-report | [0m  File "/opt/fires-report-microservice/firesreport/routes/api/v1/__init__.py", line 4, in <module>
+[36mfires-report | [0m    import firesreport_router
+[36mfires-report | [0m  File "/opt/fires-report-microservice/firesreport/routes/api/v1/firesreport_router.py", line 21
+[36mfires-report | [0m    @endpoints.route('/firesreport', methods=['GET']):
+[36mfires-report | [0m                                                     ^
+[36mfires-report | [0mSyntaxError: invalid syntax
+[36mfires-report exited with code 1
+[0mBuilding develop
+Step 1/23 : FROM python:2.7-alpine
+ ---> c80455665c57
+Step 2/23 : MAINTAINER Sergio Gordillo sergio.gordillo@vizzuality.com
+ ---> Using cache
+ ---> a57d5d9a86f5
+Step 3/23 : ENV NAME fires-report-microservice
+ ---> Using cache
+ ---> 70da87dd0423
+Step 4/23 : ENV USER microservice
+ ---> Using cache
+ ---> c3df8349668a
+Step 5/23 : RUN apk update && apk upgrade &&    apk add --no-cache --update bash git openssl-dev build-base alpine-sdk    libffi-dev
+ ---> Using cache
+ ---> dff9146010ae
+Step 6/23 : RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
+ ---> Using cache
+ ---> 0a79c2d30f37
+Step 7/23 : RUN easy_install pip && pip install --upgrade pip
+ ---> Using cache
+ ---> da48c911e9b6
+Step 8/23 : RUN pip install virtualenv gunicorn gevent
+ ---> Using cache
+ ---> a491e2f42222
+Step 9/23 : RUN mkdir -p /opt/$NAME
+ ---> Using cache
+ ---> 57d83f9ef53f
+Step 10/23 : RUN cd /opt/$NAME && virtualenv venv && source venv/bin/activate
+ ---> Using cache
+ ---> 8480cf07e13a
+Step 11/23 : COPY requirements.txt /opt/$NAME/requirements.txt
+ ---> Using cache
+ ---> 91b6b20a328f
+Step 12/23 : RUN cd /opt/$NAME && pip install -r requirements.txt
+ ---> Using cache
+ ---> 3630bb06e574
+Step 13/23 : COPY entrypoint.sh /opt/$NAME/entrypoint.sh
+ ---> Using cache
+ ---> dd415aae560d
+Step 14/23 : COPY main.py /opt/$NAME/main.py
+ ---> Using cache
+ ---> 3e3c6194e8ac
+Step 15/23 : COPY gunicorn.py /opt/$NAME/gunicorn.py
+ ---> Using cache
+ ---> f54028acffee
+Step 16/23 : WORKDIR /opt/$NAME
+ ---> Using cache
+ ---> 6a0b566a3a0e
+Step 17/23 : COPY ./firesreport /opt/$NAME/firesreport
+ ---> aba76bda23cf
+Removing intermediate container 2bd6d46c012b
+Step 18/23 : COPY ./microservice /opt/$NAME/microservice
+ ---> a93037df550b
+Removing intermediate container 0ff631ceff0a
+Step 19/23 : COPY ./tests /opt/$NAME/tests
+ ---> 6a52133109af
+Removing intermediate container c4b67f6beb49
+Step 20/23 : RUN chown $USER:$USER /opt/$NAME
+ ---> Running in ec53c237737f
+ ---> 9b7c69e236f1
+Removing intermediate container ec53c237737f
+Step 21/23 : EXPOSE 5700
+ ---> Running in 46068c7de23e
+ ---> c5670b33b024
+Removing intermediate container 46068c7de23e
+Step 22/23 : USER $USER
+ ---> Running in 8f6df0371813
+ ---> 36928d48f426
+Removing intermediate container 8f6df0371813
+Step 23/23 : ENTRYPOINT ./entrypoint.sh
+ ---> Running in b0a953e73f29
+ ---> ba8382b2147d
+Removing intermediate container b0a953e73f29
+Successfully built ba8382b2147d
+Recreating fires-report
+Attaching to fires-report
+[36mfires-report | [0mRunning Development Server
+[36mfires-report | [0m[20170214-11:00AM] [werkzeug] [INFO]  * Running on http://0.0.0.0:5700/ (Press CTRL+C to quit)
+[36mfires-report | [0m[20170214-11:00AM] [werkzeug] [INFO]  * Restarting with stat
+[36mfires-report | [0m[20170214-11:00AM] [werkzeug] [WARNING]  * Debugger is active!
+[36mfires-report | [0m[20170214-11:00AM] [werkzeug] [INFO]  * Debugger pin code: 278-741-718
+[36mfires-report | [0m[20170214-11:00AM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.63
+[36mfires-report | [0m[20170214-11:00AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:00:11] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJmaXJlc3JlcG9ydCIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwidmVyc2lvbiI6MSwiX2lkIjoiNThhMmUzM2I5ZWFmMWEwMDEzODlhZDFjIiwidGFncyI6W10sImVuZHBvaW50cyI6W10sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTE6MDA6MTEuMzExWiIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInN0YXR1cyI6InBlbmRpbmciLCJwYXRoTGl2ZSI6Ii9waW5nIiwicGF0aEluZm8iOiIvaW5mbyJ9LCJhY3RpdmVQYXRocyI6eyJwYXRocyI6eyJ2ZXJzaW9uIjoicmVxdWlyZSIsInVwZGF0ZWRBdCI6InJlcXVpcmUiLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOiJyZXF1aXJlIiwicGF0aExpdmUiOiJyZXF1aXJlIiwicGF0aEluZm8iOiJyZXF1aXJlIiwidXJsIjoicmVxdWlyZSIsIm5hbWUiOiJyZXF1aXJlIn0sInN0YXRlcyI6eyJpZ25vcmUiOnt9LCJkZWZhdWx0Ijp7fSwiaW5pdCI6e30sIm1vZGlmeSI6e30sInJlcXVpcmUiOnsidmVyc2lvbiI6dHJ1ZSwidXBkYXRlZEF0Ijp0cnVlLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOnRydWUsInBhdGhMaXZlIjp0cnVlLCJwYXRoSW5mbyI6dHJ1ZSwidXJsIjp0cnVlLCJuYW1lIjp0cnVlfX0sInN0YXRlTmFtZXMiOlsicmVxdWlyZSIsIm1vZGlmeSIsImluaXQiLCJkZWZhdWx0IiwiaWdub3JlIl19LCJlbWl0dGVyIjp7ImRvbWFpbiI6bnVsbCwiX2V2ZW50cyI6e30sIl9ldmVudHNDb3VudCI6MiwiX21heExpc3RlbmVycyI6MH19LCJpc05ldyI6ZmFsc2UsIl9kb2MiOnsicGF0aEluZm8iOiIvaW5mbyIsInBhdGhMaXZlIjoiL3BpbmciLCJzdGF0dXMiOiJwZW5kaW5nIiwiaW5mb1N0YXR1cyI6eyJudW1SZXRyaWVzIjowfSwidXBkYXRlZEF0IjoiMjAxNy0wMi0xNFQxMTowMDoxMS4zMTFaIiwiZW5kcG9pbnRzIjpbXSwidGFncyI6W10sIl9pZCI6IjU4YTJlMzNiOWVhZjFhMDAxMzg5YWQxYyIsInZlcnNpb24iOjEsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwibmFtZSI6ImZpcmVzcmVwb3J0IiwiX192IjowfSwiaWF0IjoxNDg3MDcwMDExfQ.TeEimCnd8wD46SkxVnbuasjjum34v5Mhw9_otgHpNFs&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-11:00AM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.63:9000 "POST /api/v1/microservice HTTP/1.1" 200 635
+[36mfires-report | [0m[20170214-11:00AM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.63
+[36mfires-report | [0m[20170214-11:00AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:00:11] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJmaXJlc3JlcG9ydCIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwidmVyc2lvbiI6MSwiX2lkIjoiNThhMmUzM2I5ZWFmMWEwMDEzODlhZDIwIiwidGFncyI6W10sImVuZHBvaW50cyI6W10sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTE6MDA6MTEuNTA1WiIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInN0YXR1cyI6InBlbmRpbmciLCJwYXRoTGl2ZSI6Ii9waW5nIiwicGF0aEluZm8iOiIvaW5mbyJ9LCJhY3RpdmVQYXRocyI6eyJwYXRocyI6eyJ2ZXJzaW9uIjoicmVxdWlyZSIsInVwZGF0ZWRBdCI6InJlcXVpcmUiLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOiJyZXF1aXJlIiwicGF0aExpdmUiOiJyZXF1aXJlIiwicGF0aEluZm8iOiJyZXF1aXJlIiwidXJsIjoicmVxdWlyZSIsIm5hbWUiOiJyZXF1aXJlIn0sInN0YXRlcyI6eyJpZ25vcmUiOnt9LCJkZWZhdWx0Ijp7fSwiaW5pdCI6e30sIm1vZGlmeSI6e30sInJlcXVpcmUiOnsidmVyc2lvbiI6dHJ1ZSwidXBkYXRlZEF0Ijp0cnVlLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOnRydWUsInBhdGhMaXZlIjp0cnVlLCJwYXRoSW5mbyI6dHJ1ZSwidXJsIjp0cnVlLCJuYW1lIjp0cnVlfX0sInN0YXRlTmFtZXMiOlsicmVxdWlyZSIsIm1vZGlmeSIsImluaXQiLCJkZWZhdWx0IiwiaWdub3JlIl19LCJlbWl0dGVyIjp7ImRvbWFpbiI6bnVsbCwiX2V2ZW50cyI6e30sIl9ldmVudHNDb3VudCI6MiwiX21heExpc3RlbmVycyI6MH19LCJpc05ldyI6ZmFsc2UsIl9kb2MiOnsicGF0aEluZm8iOiIvaW5mbyIsInBhdGhMaXZlIjoiL3BpbmciLCJzdGF0dXMiOiJwZW5kaW5nIiwiaW5mb1N0YXR1cyI6eyJudW1SZXRyaWVzIjowfSwidXBkYXRlZEF0IjoiMjAxNy0wMi0xNFQxMTowMDoxMS41MDVaIiwiZW5kcG9pbnRzIjpbXSwidGFncyI6W10sIl9pZCI6IjU4YTJlMzNiOWVhZjFhMDAxMzg5YWQyMCIsInZlcnNpb24iOjEsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwibmFtZSI6ImZpcmVzcmVwb3J0IiwiX192IjowfSwiaWF0IjoxNDg3MDcwMDExfQ.5tW7zsNR4GuuOt_P8nWU9w2xhJwTXRRqTyySsqmsM5s&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-11:00AM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.63:9000 "POST /api/v1/microservice HTTP/1.1" 200 635
+[36mfires-report | [0m[20170214-11:00AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:00AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:00:13] "GET /api/v1/firesreport/firesreport HTTP/1.1" 400 -
+[36mfires-report | [0m[20170214-11:10AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:10AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:10:14] "GET /api/v1/firesreport/firesreport HTTP/1.1" 400 -
+[36mfires-report | [0m[20170214-11:25AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:25AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:25:21] "GET /api/v1/firesreport/firesreport HTTP/1.1" 400 -
+[36mfires-report | [0m[20170214-11:25AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:25AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:25:27] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report | [0m[20170214-11:29AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:29AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:29:29] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report | [0m[20170214-11:30AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:30AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:30:17] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report | [0m[20170214-11:30AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:30AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:30:22] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report | [0m[20170214-11:30AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:30AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:30:38] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report | [0m[20170214-11:30AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:30AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:30:43] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report | [0m[20170214-11:30AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:30AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:30:48] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report | [0m[20170214-11:31AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:31AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:31:27] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report | [0m[20170214-11:31AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:31AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:31:35] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report | [0m[20170214-11:31AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:31AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:31:45] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report | [0m[20170214-11:32AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:32AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:32:18] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report | [0m[20170214-11:32AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:32AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:32:35] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 500 -
+[36mfires-report | [0mTraceback (most recent call last):
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mfires-report | [0m    return self.wsgi_app(environ, start_response)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mfires-report | [0m    response = self.handle_exception(e)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mfires-report | [0m    reraise(exc_type, exc_value, tb)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mfires-report | [0m    response = self.full_dispatch_request()
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mfires-report | [0m    return self.finalize_request(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mfires-report | [0m    response = self.make_response(rv)
+[36mfires-report | [0m  File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mfires-report | [0m    raise ValueError('View function did not return a response')
+[36mfires-report | [0mValueError: View function did not return a response
+[36mfires-report exited with code 137
+[0mBuilding develop
+Step 1/23 : FROM python:2.7-alpine
+ ---> c80455665c57
+Step 2/23 : MAINTAINER Sergio Gordillo sergio.gordillo@vizzuality.com
+ ---> Using cache
+ ---> a57d5d9a86f5
+Step 3/23 : ENV NAME fires-report-microservice
+ ---> Using cache
+ ---> 70da87dd0423
+Step 4/23 : ENV USER microservice
+ ---> Using cache
+ ---> c3df8349668a
+Step 5/23 : RUN apk update && apk upgrade &&    apk add --no-cache --update bash git openssl-dev build-base alpine-sdk    libffi-dev
+ ---> Using cache
+ ---> dff9146010ae
+Step 6/23 : RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
+ ---> Using cache
+ ---> 0a79c2d30f37
+Step 7/23 : RUN easy_install pip && pip install --upgrade pip
+ ---> Using cache
+ ---> da48c911e9b6
+Step 8/23 : RUN pip install virtualenv gunicorn gevent
+ ---> Using cache
+ ---> a491e2f42222
+Step 9/23 : RUN mkdir -p /opt/$NAME
+ ---> Using cache
+ ---> 57d83f9ef53f
+Step 10/23 : RUN cd /opt/$NAME && virtualenv venv && source venv/bin/activate
+ ---> Using cache
+ ---> 8480cf07e13a
+Step 11/23 : COPY requirements.txt /opt/$NAME/requirements.txt
+ ---> Using cache
+ ---> 91b6b20a328f
+Step 12/23 : RUN cd /opt/$NAME && pip install -r requirements.txt
+ ---> Using cache
+ ---> 3630bb06e574
+Step 13/23 : COPY entrypoint.sh /opt/$NAME/entrypoint.sh
+ ---> Using cache
+ ---> dd415aae560d
+Step 14/23 : COPY main.py /opt/$NAME/main.py
+ ---> Using cache
+ ---> 3e3c6194e8ac
+Step 15/23 : COPY gunicorn.py /opt/$NAME/gunicorn.py
+ ---> Using cache
+ ---> f54028acffee
+Step 16/23 : WORKDIR /opt/$NAME
+ ---> Using cache
+ ---> 6a0b566a3a0e
+Step 17/23 : COPY ./firesreport /opt/$NAME/firesreport
+ ---> ee9503105cf0
+Removing intermediate container b8dbbb3790fa
+Step 18/23 : COPY ./microservice /opt/$NAME/microservice
+ ---> 6c488ff73984
+Removing intermediate container 61de7b7d5f57
+Step 19/23 : COPY ./tests /opt/$NAME/tests
+ ---> 49cbb43cdcbf
+Removing intermediate container ddcde66d830d
+Step 20/23 : RUN chown $USER:$USER /opt/$NAME
+ ---> Running in 3d419ba7e344
+ ---> bb3d3534774d
+Removing intermediate container 3d419ba7e344
+Step 21/23 : EXPOSE 5700
+ ---> Running in f4eea8eb1048
+ ---> 589e73c4ae11
+Removing intermediate container f4eea8eb1048
+Step 22/23 : USER $USER
+ ---> Running in 1ad07eb769d3
+ ---> 72fdc99e61d7
+Removing intermediate container 1ad07eb769d3
+Step 23/23 : ENTRYPOINT ./entrypoint.sh
+ ---> Running in 825cc8fb828c
+ ---> 55df5b77f591
+Removing intermediate container 825cc8fb828c
+Successfully built 55df5b77f591
+Recreating fires-report
+Attaching to fires-report
+[36mfires-report | [0mRunning Development Server
+[36mfires-report | [0m[20170214-11:32AM] [werkzeug] [INFO]  * Running on http://0.0.0.0:5700/ (Press CTRL+C to quit)
+[36mfires-report | [0m[20170214-11:32AM] [werkzeug] [INFO]  * Restarting with stat
+[36mfires-report | [0m[20170214-11:32AM] [werkzeug] [WARNING]  * Debugger is active!
+[36mfires-report | [0m[20170214-11:32AM] [werkzeug] [INFO]  * Debugger pin code: 278-741-718
+[36mfires-report | [0m[20170214-11:32AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:32AM] [root] [ERROR] HERE
+[36mfires-report | [0m[20170214-11:32AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:32:59] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 400 -
+[36mfires-report | [0m[20170214-11:33AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:33AM] [root] [ERROR] HERE
+[36mfires-report | [0m[20170214-11:33AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:33:03] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 400 -
+[36mfires-report | [0m[20170214-11:33AM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.63
+[36mfires-report | [0m[20170214-11:33AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:33:04] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJmaXJlc3JlcG9ydCIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwidmVyc2lvbiI6MSwiX2lkIjoiNThhMmVhZjA5ZWFmMWEwMDEzODlhZDI0IiwidGFncyI6W10sImVuZHBvaW50cyI6W10sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTE6MzM6MDQuMjU5WiIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInN0YXR1cyI6InBlbmRpbmciLCJwYXRoTGl2ZSI6Ii9waW5nIiwicGF0aEluZm8iOiIvaW5mbyJ9LCJhY3RpdmVQYXRocyI6eyJwYXRocyI6eyJ2ZXJzaW9uIjoicmVxdWlyZSIsInVwZGF0ZWRBdCI6InJlcXVpcmUiLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOiJyZXF1aXJlIiwicGF0aExpdmUiOiJyZXF1aXJlIiwicGF0aEluZm8iOiJyZXF1aXJlIiwidXJsIjoicmVxdWlyZSIsIm5hbWUiOiJyZXF1aXJlIn0sInN0YXRlcyI6eyJpZ25vcmUiOnt9LCJkZWZhdWx0Ijp7fSwiaW5pdCI6e30sIm1vZGlmeSI6e30sInJlcXVpcmUiOnsidmVyc2lvbiI6dHJ1ZSwidXBkYXRlZEF0Ijp0cnVlLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOnRydWUsInBhdGhMaXZlIjp0cnVlLCJwYXRoSW5mbyI6dHJ1ZSwidXJsIjp0cnVlLCJuYW1lIjp0cnVlfX0sInN0YXRlTmFtZXMiOlsicmVxdWlyZSIsIm1vZGlmeSIsImluaXQiLCJkZWZhdWx0IiwiaWdub3JlIl19LCJlbWl0dGVyIjp7ImRvbWFpbiI6bnVsbCwiX2V2ZW50cyI6e30sIl9ldmVudHNDb3VudCI6MiwiX21heExpc3RlbmVycyI6MH19LCJpc05ldyI6ZmFsc2UsIl9kb2MiOnsicGF0aEluZm8iOiIvaW5mbyIsInBhdGhMaXZlIjoiL3BpbmciLCJzdGF0dXMiOiJwZW5kaW5nIiwiaW5mb1N0YXR1cyI6eyJudW1SZXRyaWVzIjowfSwidXBkYXRlZEF0IjoiMjAxNy0wMi0xNFQxMTozMzowNC4yNTlaIiwiZW5kcG9pbnRzIjpbXSwidGFncyI6W10sIl9pZCI6IjU4YTJlYWYwOWVhZjFhMDAxMzg5YWQyNCIsInZlcnNpb24iOjEsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwibmFtZSI6ImZpcmVzcmVwb3J0IiwiX192IjowfSwiaWF0IjoxNDg3MDcxOTg0fQ.GteL4kIEetRJU-RxtSXJJ8R6UPp35heid941_xv-Cto&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-11:33AM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.63:9000 "POST /api/v1/microservice HTTP/1.1" 200 635
+[36mfires-report | [0m[20170214-11:33AM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.63
+[36mfires-report | [0m[20170214-11:33AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:33:04] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJmaXJlc3JlcG9ydCIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwidmVyc2lvbiI6MSwiX2lkIjoiNThhMmVhZjA5ZWFmMWEwMDEzODlhZDI4IiwidGFncyI6W10sImVuZHBvaW50cyI6W10sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTE6MzM6MDQuNDUxWiIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInN0YXR1cyI6InBlbmRpbmciLCJwYXRoTGl2ZSI6Ii9waW5nIiwicGF0aEluZm8iOiIvaW5mbyJ9LCJhY3RpdmVQYXRocyI6eyJwYXRocyI6eyJ2ZXJzaW9uIjoicmVxdWlyZSIsInVwZGF0ZWRBdCI6InJlcXVpcmUiLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOiJyZXF1aXJlIiwicGF0aExpdmUiOiJyZXF1aXJlIiwicGF0aEluZm8iOiJyZXF1aXJlIiwidXJsIjoicmVxdWlyZSIsIm5hbWUiOiJyZXF1aXJlIn0sInN0YXRlcyI6eyJpZ25vcmUiOnt9LCJkZWZhdWx0Ijp7fSwiaW5pdCI6e30sIm1vZGlmeSI6e30sInJlcXVpcmUiOnsidmVyc2lvbiI6dHJ1ZSwidXBkYXRlZEF0Ijp0cnVlLCJpbmZvU3RhdHVzLm51bVJldHJpZXMiOnRydWUsInBhdGhMaXZlIjp0cnVlLCJwYXRoSW5mbyI6dHJ1ZSwidXJsIjp0cnVlLCJuYW1lIjp0cnVlfX0sInN0YXRlTmFtZXMiOlsicmVxdWlyZSIsIm1vZGlmeSIsImluaXQiLCJkZWZhdWx0IiwiaWdub3JlIl19LCJlbWl0dGVyIjp7ImRvbWFpbiI6bnVsbCwiX2V2ZW50cyI6e30sIl9ldmVudHNDb3VudCI6MiwiX21heExpc3RlbmVycyI6MH19LCJpc05ldyI6ZmFsc2UsIl9kb2MiOnsicGF0aEluZm8iOiIvaW5mbyIsInBhdGhMaXZlIjoiL3BpbmciLCJzdGF0dXMiOiJwZW5kaW5nIiwiaW5mb1N0YXR1cyI6eyJudW1SZXRyaWVzIjowfSwidXBkYXRlZEF0IjoiMjAxNy0wMi0xNFQxMTozMzowNC40NTFaIiwiZW5kcG9pbnRzIjpbXSwidGFncyI6W10sIl9pZCI6IjU4YTJlYWYwOWVhZjFhMDAxMzg5YWQyOCIsInZlcnNpb24iOjEsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi42Mzo1NzAwIiwibmFtZSI6ImZpcmVzcmVwb3J0IiwiX192IjowfSwiaWF0IjoxNDg3MDcxOTg0fQ.CLbfI0hpnuJ2i4-hEAJzW3sDmyp7BkYZ6XAkabf6Az8&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mfires-report | [0m[20170214-11:33AM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.63:9000 "POST /api/v1/microservice HTTP/1.1" 200 635
+[36mfires-report | [0m[20170214-11:33AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:33AM] [root] [ERROR] HERE
+[36mfires-report | [0m[20170214-11:33AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:33:26] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 400 -
+[36mfires-report | [0m[20170214-11:33AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:33AM] [root] [ERROR] HERE
+[36mfires-report | [0m[20170214-11:33AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:33:32] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 400 -
+[36mfires-report | [0m[20170214-11:33AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:33AM] [root] [ERROR] HERE
+[36mfires-report | [0m[20170214-11:33AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:33:43] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 400 -
+[36mfires-report | [0m[20170214-11:33AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:33AM] [root] [ERROR] HERE
+[36mfires-report | [0m[20170214-11:33AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:33:56] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 400 -
+[36mfires-report | [0m[20170214-11:34AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:34AM] [root] [ERROR] HERE
+[36mfires-report | [0m[20170214-11:34AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:34:06] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 400 -
+[36mfires-report | [0m[20170214-11:34AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:34AM] [root] [ERROR] HERE
+[36mfires-report | [0m[20170214-11:34AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:34:54] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 400 -
+[36mfires-report | [0m[20170214-11:36AM] [root] [INFO] started do_reports function
+[36mfires-report | [0m[20170214-11:36AM] [root] [ERROR] HERE
+[36mfires-report | [0m[20170214-11:36AM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 11:36:12] "GET /api/v1/firesreport/firesreport?provinces=1,3 HTTP/1.1" 400 -
+[36mfires-report exited with code 137
+[0m

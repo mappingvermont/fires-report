@@ -25,7 +25,7 @@ COPY gunicorn.py /opt/$NAME/gunicorn.py
 # Copy the application folder inside the container
 WORKDIR /opt/$NAME
 
-COPY ./fires_report /opt/$NAME/fires_report
+COPY ./firesreport /opt/$NAME/firesreport
 COPY ./microservice /opt/$NAME/microservice
 COPY ./tests /opt/$NAME/tests
 RUN chown $USER:$USER /opt/$NAME

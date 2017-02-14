@@ -3,9 +3,9 @@ import json
 import logging
 
 from flask import Flask
-from fires_report.config import settings
-from fires_report.routes.api.v1 import endpoints
-from fires_report.utils.files import load_config_json
+from firesreport.config import settings
+from firesreport.routes.api.v1 import endpoints
+from firesreport.utils.files import load_config_json
 import CTRegisterMicroserviceFlask
 
 # Logging
@@ -24,14 +24,14 @@ def create_application():
     application.config.from_object(settings)
 
     # Routing
-    application.register_blueprint(endpoints, url_prefix='/api/v1/fires_report')
+    application.register_blueprint(endpoints, url_prefix='/api/v1/firesreport')
 
     # CT
     info = load_config_json('register')
     swagger = load_config_json('swagger')
     CTRegisterMicroserviceFlask.register(
         app = application,
-        name = 'fires_report',
+        name = 'firesreport',
         info = info,
         swagger = swagger,
         mode = CTRegisterMicroserviceFlask.AUTOREGISTER_MODE if os.getenv('ENVIRONMENT') == 'dev' else CTRegisterMicroserviceFlask.NORMAL_MODE,
